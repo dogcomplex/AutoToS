@@ -8,7 +8,7 @@ Credits to GPT-o1-preview for initial code extraction from source paper and impl
 
 ### NEW SUBSEQUENT IMPLEMENTATIONS SOON.  FRUSTRATING MONKEY TIME BOTTLENECK
 
-But this does work.  Try it with gpt-4o-mini to see it fail due to insufficient intelligence.  gpt-3.5-turbo at least has a chance of failure.  Will test with local weaker models soon to see how low it can go, but more challenging implementation problems first.
+EDIT: lol nevermind still a bit overconfident.   Does not pass all unit tests yet - might still be mix of printout quality or actual verification correctness.  Need to iterate a bit more, and maybe use a genie wish (GPT-o1) to fix.  
 
 ## Overview
 
