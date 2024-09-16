@@ -4,7 +4,7 @@ This project implements an approach inspired by AutoToS (Automating Thought of S
 
 ### THIS WAS BASICALLY ENTIRELY AI-GENERATED
 
-Credits to GPT-o1-preview for initial code extraction from source paper and implementation, and Cursor (www.cursor.com) + Claude-3.5-sonnet for subsequent iteration and error testing.  Basically all suggested code was used, basically blindly, but the monkey man did a little bit of direction.
+Credits to GPT-o1-preview for initial code extraction from source paper and implementation, and Cursor (www.cursor.com) + Claude-3.5-sonnet for subsequent iteration and error testing.  Basically all suggested code was used, basically blindly, but the monkey man did a little bit of direction.  (Edit: Now quite a lot more, mostly for the inevitable refactoring)
 
 ### NEW SUBSEQUENT IMPLEMENTATIONS SOON.  FRUSTRATING MONKEY TIME BOTTLENECK
 
