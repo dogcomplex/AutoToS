@@ -68,6 +68,148 @@ To add support for new domains:
 3. Provide initial prompts for successor and goal functions
 4. Implement a solution validation method
 
+### Example Output
+
+```
+Refining goal function...
+LLM query took 2.87 seconds
+Received code:
+def isgoal(state):
+    def evaluate(expression):
+        try:
+            return eval(expression) == 24
+        except ZeroDivisionError:
+            return False
+
+    def isgoal_helper(numbers):
+        if len(numbers) == 1:
+            return numbers[0] == 24
+        for i in range(len(numbers)):
+            for j in range(len(numbers)):
+                if i != j:
+                    new_numbers = [numbers[k] for k in range(len(numbers)) if k != i and k != j]
+                    if isgoal_helper(new_numbers + [f'({numbers[i]}+{numbers[j]})']) or \
+                       isgoal_helper(new_numbers + [f'({numbers[i]}-{numbers[j]})']) or \
+                       isgoal_helper(new_numbers + [f'({numbers[i]}*{numbers[j]})']) or \
+                       (numbers[j] != 0 and isgoal_helper(new_numbers + [f'({numbers[i]}/{numbers[j]})']):
+                        return True
+        return False
+
+    return isgoal_helper(state)
+Goal function failed: Exception occurred when defining isgoal: invalid syntax (<string>, line 18)
+LLM query took 2.64 seconds
+Received code:
+def isgoal(state):
+    def evaluate(expression):
+        try:
+            return eval(expression) == 24
+        except ZeroDivisionError:
+            return False
+
+    def isgoal_helper(numbers):
+        if len(numbers) == 1:
+            return numbers[0] == 24
+        for i in range(len(numbers)):
+            for j in range(len(numbers)):
+                if i != j:
+                    new_numbers = [numbers[k] for k in range(len(numbers)) if k != i and k != j]
+                    if isgoal_helper(new_numbers + [f'({numbers[i]}+{numbers[j]})']) or \
+                       isgoal_helper(new_numbers + [f'({numbers[i]}-{numbers[j]})']) or \
+                       isgoal_helper(new_numbers + [f'({numbers[i]}*{numbers[j]})']) or \
+                       (numbers[j] != 0 and isgoal_helper(new_numbers + [f'({numbers[i]}/{numbers[j]})'])):
+                        return True
+        return False
+
+    return isgoal_helper(state)
+Goal function passed all tests.
+Refining successor function...
+LLM query took 4.42 seconds
+Received successor code:
+from itertools import combinations
+
+def succ(state):
+    def apply_operation(num1, num2, op):
+        if op == '+':
+            return num1 + num2
+        elif op == '-':
+            return num1 - num2
+        elif op == '*':
+            return num1 * num2
+        elif op == '/' and num2 != 0:
+            return num1 / num2
+        else:
+            return None
+
+    successor_states = []
+    for num1, num2 in combinations(state, 2):
+        for op in ['+', '-', '*', '/']:
+            result = apply_operation(num1, num2, op)
+            if result is not None and result not in state and result not in successor_states:
+                new_state = state.copy()
+                new_state.remove(num1)
+                new_state.remove(num2)
+                new_state.append(result)
+                successor_states.append(new_state)
+
+    return successor_states
+Successor function failed: Exception in succ function on input [6, 6, 6, 6]: name 'combinations' is not defined
+LLM query took 2.76 seconds
+Received successor code:
+def succ(state):
+    def apply_operation(num1, num2, op):
+        if op == '+':
+            return num1 + num2
+        elif op == '-':
+            return num1 - num2
+        elif op == '*':
+            return num1 * num2
+        elif op == '/' and num2 != 0:
+            return num1 / num2
+        else:
+            return None
+
+    from itertools import combinations  # Import moved inside the function
+
+    successor_states = []
+    for num1, num2 in combinations(state, 2):
+        for op in ['+', '-', '*', '/']:
+            result = apply_operation(num1, num2, op)
+            if result is not None and result not in state and result not in successor_states:
+                new_state = state.copy()
+                new_state.remove(num1)
+                new_state.remove(num2)
+                new_state.append(result)
+                successor_states.append(new_state)
+
+    return successor_states
+Successor function passed all tests.
+Starting BFS search...
+Solution found:
+[6, 6, 6, 6]
+[6, 6, 12]
+[6, 18]
+[24]
+
+Summary Statistics:
+Total execution time: 12.75 seconds
+LLM model used: gpt-3.5-turbo
+Total LLM queries: 4
+Total tokens used: 2098
+
+Function call counts:
+  get_code_from_api: 4
+  test_goal_function: 2
+  test_successor_function: 2
+  bfs_search: 1
+
+Other important parameters:
+Initial state: [6, 6, 6, 6]
+Max iterations for refining functions: 100
+Timeout for function execution: 1 second
+```
+
+
+
 ## Citation
 
 If you use this code in your research, please cite both this repository and the original paper that inspired it:
