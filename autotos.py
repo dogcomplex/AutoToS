@@ -6,14 +6,26 @@ import copy
 import threading
 from openai import OpenAI
 import re
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configuration section
 CONFIG = {
-    'OPENAI_API_KEY': 'YOUR_API_KEY_HERE',
-    'MODEL_NAME': 'gpt-3.5-turbo',
+    'OPENAI_API_KEY': os.getenv('OPENAI_API_KEY'),
+    'MODEL_NAME': 'gpt-4',
     'MAX_ITERATIONS': 100,
     'FUNCTION_TIMEOUT': 1,
-    'INITIAL_STATE': [6, 6, 6, 6],
+    'INITIAL_STATES': [
+        [6, 6, 6, 6],
+        [1, 2, 3, 4],
+        [5, 5, 5, 5],
+        [7, 7, 7, 7],
+        [2, 4, 8, 10],
+    ],
+    'NUM_RANDOM_STATES': 5,  # Number of random states to generate
 }
 
 # Set OpenAI API key
@@ -308,7 +320,7 @@ def test_successor_function(succ_code, isgoal_code):
     # Partial soundness check during BFS
     from collections import deque
 
-    initial_state = CONFIG['INITIAL_STATE']  # Example initial state
+    initial_state = CONFIG['INITIAL_STATES'][0]  # Example initial state
     goal_found = False
     visited = set()
     queue = deque()
@@ -458,7 +470,12 @@ def validate_solution(solution):
     # Check if the last state is the goal state
     return solution[-1] == [24]
 
-# Modify the main function to print summary statistics
+# Add this new function to generate random initial states
+def generate_random_initial_state():
+    import random
+    return [random.randint(1, 13) for _ in range(4)]
+
+# Modify the main function to use multiple initial states
 def main():
     start_time = time.time()
     
@@ -467,15 +484,28 @@ def main():
     print("Refining successor function...")
     succ_code = refine_successor_function(goal_code)
 
-    initial_state = CONFIG['INITIAL_STATE']
-    print("Starting BFS search...")
-    solution = bfs_search(succ_code, goal_code, initial_state)
-    if validate_solution(solution):
-        print("Solution found:")
-        for state in solution:
-            print(state)
-    else:
-        print("No solution found or solution is invalid.")
+    # Use predefined initial states
+    for i, initial_state in enumerate(CONFIG['INITIAL_STATES'], 1):
+        print(f"\nSolving for initial state {i}: {initial_state}")
+        solution = bfs_search(succ_code, goal_code, initial_state)
+        if validate_solution(solution):
+            print("Solution found:")
+            for state in solution:
+                print(state)
+        else:
+            print("No solution found or solution is invalid.")
+
+    # Generate and use random initial states
+    for i in range(CONFIG['NUM_RANDOM_STATES']):
+        initial_state = generate_random_initial_state()
+        print(f"\nSolving for random initial state {i+1}: {initial_state}")
+        solution = bfs_search(succ_code, goal_code, initial_state)
+        if validate_solution(solution):
+            print("Solution found:")
+            for state in solution:
+                print(state)
+        else:
+            print("No solution found or solution is invalid.")
 
     end_time = time.time()
     total_time = end_time - start_time
@@ -490,7 +520,8 @@ def main():
         print(f"  {func}: {count}")
 
     print("\nOther important parameters:")
-    print(f"Initial state: {initial_state}")
+    print(f"Initial states: {CONFIG['INITIAL_STATES']}")
+    print(f"Number of random states: {CONFIG['NUM_RANDOM_STATES']}")
     print(f"Max iterations for refining functions: {CONFIG['MAX_ITERATIONS']}")
     print(f"Timeout for function execution: {CONFIG['FUNCTION_TIMEOUT']} second")
 
