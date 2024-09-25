@@ -1,6 +1,6 @@
 # AutoToS-Inspired: Automating Thought of Search
 
-This project implements an approach inspired by AutoToS (Automating Thought of Search), a general method for automatically generating sound and complete search components for planning and reasoning problems using large language models (LLMs).
+This project implements an approach inspired by AutoToS (Automating Thought of Search https://arxiv.org/abs/2408.11326), a general method for automatically generating sound and complete search components for planning and reasoning problems using large language models (LLMs).
 
 ### THIS WAS BASICALLY ENTIRELY AI-GENERATED
 
